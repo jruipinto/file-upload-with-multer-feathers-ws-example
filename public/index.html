@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example</title>
+    <style>
+        :root {
+            --body-bg: whitesmoke;
+            --primary: dodgerblue;
+            --border-radius: 3px;
+            --sans-serif: sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            align-items: center;
+            background-color: var(--body-bg);
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            margin: 0;
+        }
+
+        #files_input_label {
+            background-color: var(--primary);
+            border-radius: var(--border-radius);
+            color: var(--body-bg);
+            cursor: pointer;
+            font-family: var(--sans-serif);
+            padding: 1rem 4rem;
+            text-transform: uppercase;
+        }
+
+        #files_input {
+            opacity: 0;
+            width: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <label for="files_input" id="files_input_label">Upload</label>
+        <input type="file" id="files_input" onchange="upload(files)" multiple>
+    </div>
+
+    <script src="//unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script>
+        // Set up socket.io
+        const socket = io('http://localhost:3030');
+        // Initialize a Feathers app
+        const app = feathers();
+
+        // Register socket.io to talk to our server
+        app.configure(feathers.socketio(socket));
+        const apiURL = 'http://localhost:3030/files'
+
+        const uploadLbl = document.getElementById('files_input_label')
+
+        function setErrorInLabel(element) {
+            element.style.backgroundColor = '#ff7171'
+            element.innerText = 'Error'
+        }
+        function setSuccessInLabel(element) {
+            element.innerText = 'Succeed!'
+            setTimeout(() => {
+                element.innerText = 'Upload'
+            }, 1000);
+        }
+        function setProgressInLabel(element) {
+            return {
+                as(progressString) {
+                    element.innerText = progressString
+                }
+            }
+        }
+        function handleXHRError(err) {
+            setErrorInLabel(uploadLbl)
+            console.log(err)
+        }
+        function handleXHRLoad(load) {
+            setSuccessInLabel(uploadLbl)
+            console.log('LOAD result:', load)
+        }
+        function handleXHRProgress(progress) {
+            const { total, loaded } = progress
+            progressPercent = `${(loaded * 100) / total}%`
+            setProgressInLabel(uploadLbl).as(progressPercent)
+            console.log('progress:', progressPercent)
+        }
+        function upload(filesList) {
+            const xhr = new XMLHttpRequest()
+            const formData = new FormData()
+            xhr.addEventListener('error', handleXHRError)
+            xhr.addEventListener('load', handleXHRLoad)
+            xhr.addEventListener('progress', handleXHRProgress)
+            Array.from(filesList).forEach(file => {
+                formData.append('file', file)
+            })
+            xhr.open('POST', apiURL)
+            xhr.send(formData)
+        }
+    </script>
+
+</body>
+
+</html>
