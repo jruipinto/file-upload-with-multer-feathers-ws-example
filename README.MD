@@ -16,3 +16,4 @@ npm start
 - [MDN html input type=file](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file)
 - [MDN css variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
 - [MDN getElementById](https://developer.mozilla.org/pt-BR/docs/Web/API/Document/getElementById)
+- [Understanding Module Exports](https://www.sitepoint.com/understanding-module-exports-exports-node-js/)
