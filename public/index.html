@@ -56,13 +56,6 @@
     <script src="//unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script>
-        // Set up socket.io
-        const socket = io('http://localhost:3030');
-        // Initialize a Feathers app
-        const app = feathers();
-
-        // Register socket.io to talk to our server
-        app.configure(feathers.socketio(socket));
         const apiURL = 'http://localhost:3030/files'
 
         const uploadLbl = document.getElementById('files_input_label')
@@ -94,22 +87,38 @@
         }
         function handleXHRProgress(progress) {
             const { total, loaded } = progress
-            progressPercent = `${(loaded * 100) / total}%`
+            progressPercent = `${Math.round((loaded * 100) / total)}%`
             setProgressInLabel(uploadLbl).as(progressPercent)
             console.log('progress:', progressPercent)
         }
         function upload(filesList) {
             const xhr = new XMLHttpRequest()
             const formData = new FormData()
-            xhr.addEventListener('error', handleXHRError)
-            xhr.addEventListener('load', handleXHRLoad)
-            xhr.addEventListener('progress', handleXHRProgress)
+            xhr.upload.addEventListener('error', handleXHRError)
+            xhr.upload.addEventListener('load', handleXHRLoad)
+            xhr.upload.addEventListener('progress', handleXHRProgress)
             Array.from(filesList).forEach(file => {
                 formData.append('file', file)
             })
             xhr.open('POST', apiURL)
             xhr.send(formData)
         }
+    </script>
+    <script>
+        // Set up socket.io
+        const socket = io('http://localhost:3030');
+        // Initialize a Feathers app
+        const app = feathers();
+        // Register socket.io to talk to our server
+        app.configure(feathers.socketio(socket));
+
+        function logFile(file) {
+            console.log('New file was uploaded:', file)
+            app.service('files').find()
+                .then(result => { console.log('results:', result) })
+                .catch(err => { console.log('error finding files:', err) })
+        }
+        app.service('files').on('created', logFile);
     </script>
 
 </body>
