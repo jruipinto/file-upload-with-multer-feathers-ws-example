@@ -70,10 +70,10 @@
                 element.innerText = 'Upload'
             }, 1000);
         }
-        function setProgressInLabel(element) {
+        function writeTheFollowing(progressPercent) {
             return {
-                as(progressString) {
-                    element.innerText = progressString
+                to(element) {
+                    element.innerText = progressPercent
                 }
             }
         }
@@ -88,7 +88,7 @@
         function handleXHRProgress(progress) {
             const { total, loaded } = progress
             progressPercent = `${Math.round((loaded * 100) / total)}%`
-            setProgressInLabel(uploadLbl).as(progressPercent)
+            writeTheFollowing(progressPercent).to(uploadLbl)
             console.log('progress:', progressPercent)
         }
         function upload(filesList) {
