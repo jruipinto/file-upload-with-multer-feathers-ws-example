@@ -56,7 +56,7 @@
     <script src="//unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script>
-        const apiURL = window.location.href + 'upload'
+        const apiURL = window.location.href + 'files'
 
         const uploadLbl = document.getElementById('files_input_label')
 
@@ -106,7 +106,7 @@
     </script>
     <script>
         // Set up socket.io
-        const socket = io('http://localhost:3030');
+        const socket = io(window.location.href);
         // Initialize a Feathers app
         const app = feathers();
         // Register socket.io to talk to our server
