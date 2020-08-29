@@ -7,7 +7,7 @@
 npm i
 npm start
 ```
-- open , in your browser, the URL logged into the console
+- open , in your browser, the URL logged into the console (or the IP of the machine in wich the example is executing)
 
 # References
 
