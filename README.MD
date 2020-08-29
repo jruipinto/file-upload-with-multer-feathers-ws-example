@@ -1,3 +1,4 @@
+![Screenshot of the example](/screenshot.jpg?raw=true "Screenshot")
 
 # TL;DR
 
