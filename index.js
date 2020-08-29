@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public/')));
 app.configure(express.rest());
 // Configure Socket.io real-time APIs
 app.configure(socketio());
-// Register an in-memory messages service
+// Register files service
 app.use('/files',
     upload.any(),
     new FilesService()
